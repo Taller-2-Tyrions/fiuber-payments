@@ -1,2 +1,2 @@
-# payments
+# Payments
 Node Payment Service
