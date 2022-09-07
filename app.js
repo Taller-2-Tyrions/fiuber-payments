@@ -51,5 +51,5 @@ app.get("/heavy", async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log("Escuchando en puerto", PORT);
+  console.log("Escuchando en puerto:", PORT);
 });
