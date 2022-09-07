@@ -2,9 +2,13 @@
 Node Payment Service
 # Dependencias
 $ node -v
->= v14.13.1
+
+$\ge$ v14.13.1
+
 $ docker -v
->= Docker version 18.09.7
+
+$\ge$ Docker version 18.09.7
+
 # Levantar el servicio con Docker
 En la raíz del proyecto y con los permisos Docker necesarios correr:
 
@@ -13,4 +17,5 @@ En la raíz del proyecto y con los permisos Docker necesarios correr:
 
 # Uso del API
 Hacer GET simple que retorna sin más
+
 `curl -X GET http://localhost:3010/`
