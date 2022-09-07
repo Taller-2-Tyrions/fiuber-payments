@@ -14,3 +14,5 @@ En la raíz del proyecto y con los permisos Docker necesarios correr:
 # Uso del API
 Hacer GET simple que retorna sin más
 `curl -X GET http://localhost:3010/`
+
+# Heroku test
