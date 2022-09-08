@@ -21,10 +21,10 @@ jobs:
       # Check-out your repository.
       - name: Checkout
         uses: actions/checkout@v3 # ó checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js #${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16 #${{ matrix.node-version }}
       - name: Install dependencies
         run: yarn
       - run: npm  ci
