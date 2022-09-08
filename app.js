@@ -15,7 +15,7 @@ app.get("/", (req, res) => {
 
 app.get("/ping", (req, res) => {
   console.log("ping OK\n");
-  res.status(200).send("pong!\n");
+  res.status(200).send("pong!!!\n");
 });
 
 app.get("/timeout", async (req, res) => {
