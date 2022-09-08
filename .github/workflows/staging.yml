@@ -4,7 +4,9 @@ name: Deploy to heroku.
 # Run workflow on every push to master branch.
 on:
   push:
-    branches: [main]
+    branches: [dev,main]
+  pull_request:
+    branches: [dev,main]
 
 # Your workflows jobs.
 jobs:
@@ -52,7 +54,8 @@ jobs:
           # Select the process type for which you want the docker container to be uploaded.
           # By default, this argument is set to "web".
           # For more information look at https://devcenter.heroku.com/articles/process-model
-          process_type: web
+          
+          #process_type: web
           
    
           
