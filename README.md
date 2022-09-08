@@ -9,6 +9,9 @@ $ docker -v
 
 $\ge$ Docker version 18.09.7
 
+$ npm -v
+
+
 # Levantar el servicio con Docker
 En la raíz del proyecto y con los permisos Docker necesarios correr:
 
