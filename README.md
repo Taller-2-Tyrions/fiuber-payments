@@ -23,4 +23,15 @@ docker run --name basic-postgres --rm -e POSTGRES_USER=postgres -e POSTGRES_PASS
 ```
 # Uso del API
 Hacer GET simple que retorna sin más
-`curl -X GET http://localhost:3010/`
+```
+curl -X GET http://localhost:3010/
+```
+### Obtener Transaccion por id
+```
+curl -X GET \
+  http://localhost:3010/transactions/{id_transaccion} \
+  -H 'content-type: application/json' \
+```
+<b>Reference</b>
+
+<i>id_transaccion:</i> identificador de la transacción
