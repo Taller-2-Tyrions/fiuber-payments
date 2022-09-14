@@ -4,10 +4,37 @@ const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
 const app = express();
 
+var pgp = require("pg-promise")(/*options*/);
+var db = pgp("postgres://postgres:postgres@localhost:5432/postgres");
+
+/* For Hashing */
+// var crypto = require('crypto');
+
+
 const PORT = 3010;
 const TIMEOUT = 5000;
+const SELECT_ALL_TRANSACTION_FOR_ID = "SELECT * FROM transactions WHERE id = $1"
+const CONTENT_TYPE_JSON = {'Content-Type': 'application/json' }
+const EMPTY_JSON = "{}"
 
 const id = Math.floor(Math.random() * 100);
+
+app.get("/transactions/:idTransaction", async (req,res) => {
+  var idTransaction  = req.params.idTransaction
+  console.log("Retrieve transaction "+ idTransaction)
+  
+  let res_data = await db.one(SELECT_ALL_TRANSACTION_FOR_ID, idTransaction)
+      .then(data => {
+        console.log("Data:", data)
+        return JSON.stringify(data)
+      })
+      .catch(function (error) {
+          console.log("Error:", error)
+          return EMPTY_JSON
+      })
+  res.set(CONTENT_TYPE_JSON)
+  res.send(res_data)
+})
 
 app.get("/", (req, res) => {
   res.status(200).send("OK, I'm Up!\n");
