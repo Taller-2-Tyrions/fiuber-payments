@@ -35,3 +35,17 @@ curl -X GET \
 <b>Reference</b>
 
 <i>id_transaccion:</i> identificador de la transacción
+
+### Guardar una nueva transaccion por id usuario
+```
+curl --request POST 'http://localhost:3010/payments/{userId}' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "amount": 20
+}'
+```
+<b>Reference</b>
+
+<i>amount:</i> indica el monto de la transaccion
+<i>userId:</i> indica el id de usuario que hizo la transaccion
+
