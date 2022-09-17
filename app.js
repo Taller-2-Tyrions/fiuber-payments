@@ -25,7 +25,6 @@ var pgp = require("pg-promise")({
 });//(/*options*/)
 // var pgp = require("pg-promise")();
 
-//let conn = "postgres://"+USER+":"+PASSWORD+"@"+HOST+":"+PORT+"/"+DATABASE
 var db = pgp(DATABASE_URL);
 var moment = require('moment')
 
@@ -35,7 +34,6 @@ var moment = require('moment')
 
 const DATE_FORMAT = "YYYY-MM-DD HH:mm:ss"
 const SELECT_ALL_TRANSACTION_FOR_ID = "SELECT * FROM transactions WHERE id = $1"
-//const INSERT_NEW_TRANSACTION_PAY = "INSERT INTO transactions (user_id,creation_date,amount) values"
 
 const CONTENT_TYPE_JSON = {'Content-Type': 'application/json' }
 const EMPTY_JSON = "{}"
@@ -43,12 +41,14 @@ const EMPTY_JSON = "{}"
 const id = Math.floor(Math.random() * 100);
 
 var cors = require('cors')
-var corsOptions = {
-  origin: 'https://fiuber-voyage.herokuapp.com',
-  optionsSuccessStatus: 200
-}
 
+/* Cors for other case */
+// var corsOptions = {
+//   origin: 'https://fiuber-voyage.herokuapp.com',
+//   optionsSuccessStatus: 200
+// }
 //app.use(cors(corsOptions));
+
 app.use(cors())
 
 //app.post("/payments/:idUser", cors(corsOptions), async (req, res) => {
