@@ -49,6 +49,8 @@ var corsOptions = {
   optionsSuccessStatus: 200
 }
 
+app.use(cors(corsOptions));
+
 app.post("/payments/:idUser", cors(corsOptions), async (req, res) => {
   console.log("body: "+req.body+" amount: "+req.body.amount)
   var idUser  = parseInt(req.params.idUser)
