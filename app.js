@@ -9,26 +9,58 @@ const DATABASE_URL = process.env.PG_DATABASE_URL
 const APP_PORT = 3010
 const TIMEOUT = 5000;
 
+const bodyParser = require('body-parser');
 const express = require("express")
+
 const request = require("request")
 const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args))
 const app = express()
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(bodyParser.raw());
 
-var pgp = require("pg-promise")(/*options*/)
+var pgp = require("pg-promise")({
+   capSQL: true
+});
+
+//(/*options*/)
 //let conn = "postgres://"+USER+":"+PASSWORD+"@"+HOST+":"+PORT+"/"+DATABASE
-let conn = DATABASE_URL
+var conn = DATABASE_URL
 var db = pgp(conn);
-
+var moment = require('moment')
 /* For Hashing */
 // var crypto = require('crypto');
 
 
+const DATE_FORMAT = "YYYY-MM-DD HH:mm:ss"
 const SELECT_ALL_TRANSACTION_FOR_ID = "SELECT * FROM transactions WHERE id = $1"
+//const INSERT_NEW_TRANSACTION_PAY = "INSERT INTO transactions (user_id,creation_date,amount) values"
+
 const CONTENT_TYPE_JSON = {'Content-Type': 'application/json' }
 const EMPTY_JSON = "{}"
 
 const id = Math.floor(Math.random() * 100);
+
+app.post("/payments/:idUser", async (req, res) => {
+  console.log("body: "+req.body+" amount: "+req.body.amount)
+  var idUser  = parseInt(req.params.idUser)
+  var amount = req.body.amount
+
+  var creationDate = moment(new Date()).format(DATE_FORMAT);
+  console.log(creationDate)
+  
+  const transaction = {user_id: idUser, creation_date: creationDate, amount: amount};
+	
+  console.log("Processing payment for user "+ idUser+" and Tx Obj:"+JSON.stringify(transaction))
+
+  let insert = pgp.helpers.insert(transaction, null, 'transactions')
+  await db.none(insert)
+
+  let resData = ""
+  res.set(CONTENT_TYPE_JSON)
+  res.send(resData)
+})
 
 app.get("/transactions/:idTransaction", async (req,res) => {
   var idTransaction  = req.params.idTransaction
