@@ -51,7 +51,7 @@ var corsOptions = {
 }
 
 //app.use(cors(corsOptions));
-app.user(cors())
+app.use(cors())
 
 //app.post("/payments/:idUser", cors(corsOptions), async (req, res) => {
   app.post("/payments/:idUser", async (req, res) => {
