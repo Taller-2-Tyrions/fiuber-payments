@@ -4,10 +4,12 @@ const USER = process.env.PG_USER
 const PASSWORD = process.env.PG_PASSWORD
 const HOST = process.env.PG_HOST
 const PORT = process.env.PG_PORT
-const DATABASE_URL = process.env.PG_DATABASE_URL
+//const DATABASE_URL = process.env.PG_DATABASE_URL
+
+const DATABASE_URL = "postgres://postgres:postgres@127.0.0.1:5432/postgres"
 
 const APP_PORT = 3010
-const TIMEOUT = 5000;
+const TIMEOUT = 30000;
 
 const bodyParser = require('body-parser');
 const express = require("express")
@@ -22,13 +24,13 @@ app.use(bodyParser.raw());
 
 var pgp = require("pg-promise")({
    capSQL: true
-});
+});//(/*options*/)
+// var pgp = require("pg-promise")();
 
-//(/*options*/)
 //let conn = "postgres://"+USER+":"+PASSWORD+"@"+HOST+":"+PORT+"/"+DATABASE
-var conn = DATABASE_URL
-var db = pgp(conn);
+var db = pgp(DATABASE_URL);
 var moment = require('moment')
+
 /* For Hashing */
 // var crypto = require('crypto');
 
@@ -42,7 +44,12 @@ const EMPTY_JSON = "{}"
 
 const id = Math.floor(Math.random() * 100);
 
-app.post("/payments/:idUser", async (req, res) => {
+var corsOptions = {
+  origin: 'https://fiuber-voyage.herokuapp.com',
+  optionsSuccessStatus: 200
+}
+
+app.post("/payments/:idUser", cors(corsOptions), async (req, res) => {
   console.log("body: "+req.body+" amount: "+req.body.amount)
   var idUser  = parseInt(req.params.idUser)
   var amount = req.body.amount
