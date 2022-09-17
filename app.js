@@ -1,17 +1,18 @@
-const express = require("express");
-const request = require("request");
+const express = require("express")
+const request = require("request")
 const fetch = (...args) =>
-  import("node-fetch").then(({ default: fetch }) => fetch(...args));
-const app = express();
+  import("node-fetch").then(({ default: fetch }) => fetch(...args))
+const app = express()
 
-var pgp = require("pg-promise")(/*options*/);
-var db = pgp("postgres://postgres:postgres@localhost:5432/postgres");
+var pgp = require("pg-promise")(/*options*/)
+let conn = "postgres://postgres:postgres@"+PG_HOST+":"+PG_PORT"/"+PG_DATABASE
+var db = pgp(conn);
 
 /* For Hashing */
 // var crypto = require('crypto');
 
 
-const PORT = 3010;
+const PG_PORT = 3010;
 const TIMEOUT = 5000;
 const SELECT_ALL_TRANSACTION_FOR_ID = "SELECT * FROM transactions WHERE id = $1"
 const CONTENT_TYPE_JSON = {'Content-Type': 'application/json' }
@@ -78,6 +79,6 @@ app.get("/heavy", async (req, res) => {
 });
 
 
-app.listen(process.env.PORT || PORT, () => {
-  console.log("Escuchando en puerto =>", PORT);
+app.listen(process.env.PORT || PG_PORT, () => {
+  console.log("Escuchando en puerto =>", PG_PORT);
 });
