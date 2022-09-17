@@ -1,3 +1,14 @@
+require('dotenv').config();
+
+const USER = process.env.PG_USER
+const PASSWORD = process.env.PG_PASSWORD
+const HOST = process.env.PG_HOST
+const PORT = process.env.PG_PORT
+const DATABASE = process.env.PG_DATABASE
+
+const APP_PORT = 3010
+const TIMEOUT = 5000;
+
 const express = require("express")
 const request = require("request")
 const fetch = (...args) =>
@@ -5,15 +16,14 @@ const fetch = (...args) =>
 const app = express()
 
 var pgp = require("pg-promise")(/*options*/)
-let conn = "postgres://postgres:postgres@"+PG_HOST+":"+PG_PORT"/"+PG_DATABASE
+let conn = "postgres://postgres:postgres@"+HOST+":"+PORT+"/"+DATABASE
+
 var db = pgp(conn);
 
 /* For Hashing */
 // var crypto = require('crypto');
 
 
-const PG_PORT = 3010;
-const TIMEOUT = 5000;
 const SELECT_ALL_TRANSACTION_FOR_ID = "SELECT * FROM transactions WHERE id = $1"
 const CONTENT_TYPE_JSON = {'Content-Type': 'application/json' }
 const EMPTY_JSON = "{}"
@@ -79,6 +89,6 @@ app.get("/heavy", async (req, res) => {
 });
 
 
-app.listen(process.env.PORT || PG_PORT, () => {
-  console.log("Escuchando en puerto =>", PG_PORT);
+app.listen(process.env.APP_PORT || APP_PORT, () => {
+  console.log("Escuchando en puerto =>", APP_PORT);
 });
