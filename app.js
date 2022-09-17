@@ -4,7 +4,7 @@ const USER = process.env.PG_USER
 const PASSWORD = process.env.PG_PASSWORD
 const HOST = process.env.PG_HOST
 const PORT = process.env.PG_PORT
-const DATABASE = process.env.PG_DATABASE
+const DATABASE_URL = process.env.PG_DATABASE_URL
 
 const APP_PORT = 3010
 const TIMEOUT = 5000;
@@ -16,7 +16,8 @@ const fetch = (...args) =>
 const app = express()
 
 var pgp = require("pg-promise")(/*options*/)
-let conn = "postgres://"+USER+":"+PASSWORD+"@"+HOST+":"+PORT+"/"+DATABASE
+//let conn = "postgres://"+USER+":"+PASSWORD+"@"+HOST+":"+PORT+"/"+DATABASE
+let conn = DATABASE_URL
 var db = pgp(conn);
 
 /* For Hashing */
