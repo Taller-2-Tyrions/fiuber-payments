@@ -4,9 +4,7 @@ const USER = process.env.PG_USER
 const PASSWORD = process.env.PG_PASSWORD
 const HOST = process.env.PG_HOST
 const PORT = process.env.PG_PORT
-//const DATABASE_URL = process.env.PG_DATABASE_URL
-
-const DATABASE_URL = "postgres://postgres:postgres@127.0.0.1:5432/postgres"
+const DATABASE_URL = process.env.PG_DATABASE_URL
 
 const APP_PORT = 3010
 const TIMEOUT = 30000;
