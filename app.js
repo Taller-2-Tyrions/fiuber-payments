@@ -44,6 +44,7 @@ const EMPTY_JSON = "{}"
 
 const id = Math.floor(Math.random() * 100);
 
+var cors = require('cors')
 var corsOptions = {
   origin: 'https://fiuber-voyage.herokuapp.com',
   optionsSuccessStatus: 200
