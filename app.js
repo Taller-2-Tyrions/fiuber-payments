@@ -16,8 +16,7 @@ const fetch = (...args) =>
 const app = express()
 
 var pgp = require("pg-promise")(/*options*/)
-let conn = "postgres://postgres:postgres@"+HOST+":"+PORT+"/"+DATABASE
-
+let conn = "postgres://"+USER+":"+PASSWORD+"@"+HOST+":"+PORT+"/"+DATABASE
 var db = pgp(conn);
 
 /* For Hashing */
