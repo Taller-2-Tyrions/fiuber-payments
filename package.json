@@ -8,6 +8,7 @@
     "hardhat": "^2.12.1",
     "hardhat-deploy": "^0.11.18",
     "hardhat-deploy-ethers": "^0.3.0-beta.13",
+    "mongodb": "^4.11.0",
     "solc": "^0.7.4"
   },
   "devDependencies": {
