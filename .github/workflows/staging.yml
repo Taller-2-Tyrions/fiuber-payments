@@ -32,10 +32,10 @@ jobs:
           echo ALCHEMY_API_KEY: ${{secrets.ALCHEMY_API_KEY}} >> .env
           echo MNEMONIC: ${{secrets.MNEMONIC}} >> .env
           echo DATABASE_URI: ${{secrets.DATABASE_URI}} >> .env
-#        env:
-#          ALCHEMY_API_KEY: ${{secrets.ALCHEMY_API_KEY}}
-#          MNEMONIC: ${{secrets.MNEMONIC}}
-#          DATABASE_URI: ${{secrets.DATABASE_URI}}
+        env:
+          ALCHEMY_API_KEY: ${{secrets.ALCHEMY_API_KEY}}
+          MNEMONIC: ${{secrets.MNEMONIC}}
+          DATABASE_URI: ${{secrets.DATABASE_URI}}
       - name: Use Node.js #${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
