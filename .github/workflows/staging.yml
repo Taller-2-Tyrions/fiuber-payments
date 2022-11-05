@@ -10,9 +10,13 @@ on:
     types: [opened, synchronize]
 
 # Your workflows jobs.
+#env:
+#  ALCHEMY_API_KEY: ${{secrets.ALCHEMY_API_KEY}}
+#  MNEMONIC: ${{secrets.MNEMONIC}}
+#  DATABASE_URI: ${{secrets.DATABASE_URI}}
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
 #    strategy:
 #      matrix:
@@ -22,6 +26,17 @@ jobs:
       # Check-out your repository.
       - name: Checkout
         uses: actions/checkout@v3 # ó checkout@v2
+      - name: Create .env file
+        run: |
+          touch .env
+          echo ALCHEMY_API_KEY: ${{secrets.ALCHEMY_API_KEY}} >> .env
+          echo MNEMONIC: ${{secrets.MNEMONIC}} >> .env
+          echo DATABASE_URI: ${{secrets.DATABASE_URI}} >> .env
+          npm run script-that-accesses-env-vars
+        env:
+          ALCHEMY_API_KEY: ${{secrets.ALCHEMY_API_KEY}}
+          MNEMONIC: ${{secrets.MNEMONIC}}
+          DATABASE_URI: ${{secrets.DATABASE_URI}}
       - name: Use Node.js #${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
