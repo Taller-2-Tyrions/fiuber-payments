@@ -10,10 +10,13 @@ on:
     types: [opened, synchronize]
 
 # Your workflows jobs.
-#env:
-#  ALCHEMY_API_KEY: ${{secrets.ALCHEMY_API_KEY}}
-#  MNEMONIC: ${{secrets.MNEMONIC}}
-#  DATABASE_URI: ${{secrets.DATABASE_URI}}
+env:
+  ALCHEMY_API_KEY: ${{secrets.ALCHEMY_API_KEY}}
+  MNEMONIC: ${{secrets.MNEMONIC}}
+  DATABASE_URI: ${{secrets.DATABASE_URI}}
+  HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+  HEROKU_API_EMAIL: ${{ secrets.HEROKU_API_EMAIL }}
+  APP_NAME: ${{ secrets.HEROKU_APP }}
 jobs:
   build:
     runs-on: ubuntu-20.04
@@ -32,10 +35,10 @@ jobs:
           echo ALCHEMY_API_KEY=${{secrets.ALCHEMY_API_KEY}} >> .env
           echo MNEMONIC=${{secrets.MNEMONIC}} >> .env
           echo DATABASE_URI=${{secrets.DATABASE_URI}} >> .env
-        env:
-          ALCHEMY_API_KEY: ${{secrets.ALCHEMY_API_KEY}}
-          MNEMONIC: ${{secrets.MNEMONIC}}
-          DATABASE_URI: ${{secrets.DATABASE_URI}}
+#        env:
+#          ALCHEMY_API_KEY: ${{secrets.ALCHEMY_API_KEY}}
+#          MNEMONIC: ${{secrets.MNEMONIC}}
+#          DATABASE_URI: ${{secrets.DATABASE_URI}}
       - name: Use Node.js #${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
