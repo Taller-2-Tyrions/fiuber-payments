@@ -16,6 +16,7 @@ env:
   DATABASE_URI: ${{secrets.DATABASE_URI}}
   HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
   HEROKU_API_EMAIL: ${{ secrets.HEROKU_API_EMAIL }}
+  APP_PORT: ${{ secrets.APP_PORT }}
 jobs:
   build:
     runs-on: ubuntu-20.04
