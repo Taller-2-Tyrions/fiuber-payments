@@ -9,7 +9,7 @@ const getDeployerWallet =
   () => {
     const provider = new ethers.providers.AlchemyProvider(config.network, process.env.ALCHEMY_API_KEY);
     const wallet = ethers.Wallet.fromMnemonic(config.deployerMnemonic).connect(provider);
-    console.log("Deployer wallet" + wallet.address);
+    logger.info("Deployer wallet " + wallet.address);
     return wallet;
   };
 
@@ -35,15 +35,10 @@ const createWallet =
 
 const getWalletsData = () => () => {
   return DbConnection.getWallets();
-  // return accounts;
 };
 
 const getWalletData = () => user_id => {
-  // return accounts[index - 1];
-
   const wallet = DbConnection.getWallet(user_id).then( wallet => {
-    logger.info("Wallet retrieved: "+JSON.stringify(wallet));
-
     if(wallet == null){
       let err_msj = "Waller["+user_id+"] not exist";
       logger.error(err_msj);

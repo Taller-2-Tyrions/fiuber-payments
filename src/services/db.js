@@ -55,12 +55,10 @@ var DbConnection = function () {
     let collection = _db.collection("wallets");
     let wallets = await collection.find({}).toArray();
 
-    logger.info('Wallets retrieved: ', JSON.stringify(wallets));
+    logger.info('All wallets retrieved: ', JSON.stringify(wallets));
 
     return wallets;
   }
-
-
 
   return {
     Get,

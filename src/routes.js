@@ -1,9 +1,19 @@
 const getWalletData = require("./handlers/getWalletHandler");
 const getWalletsData = require("./handlers/getWalletsHandler");
+const getWalletBalance = require("./handlers/getWalletBalance");
 const createWallet = require("./handlers/createWalletHandler");
 const createDeposit = require("./handlers/createDepositHandler");
 const getDeposit = require("./handlers/getDepositHandler");
 const createWithdraw = require("./handlers/createWithdrawHandler");
+
+function getWalletBalanceOf( {services, config}) {
+  return {
+    method: "GET",
+    url: "/wallet/balance/:user_id",
+    schema: getWalletBalance.schema(config),
+    handler: getWalletBalance.handler({ config, ...services }),
+  };
+}
 
 function getWalletDataRoute({ services, config }) {
   return {

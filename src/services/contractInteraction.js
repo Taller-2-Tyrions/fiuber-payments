@@ -1,3 +1,4 @@
+const logger = require('simple-node-logger').createSimpleLogger();
 const ethers = require("ethers");
 const walletService = require("./wallets");
 const getDepositHandler = require("../handlers/getDepositHandler");
@@ -87,8 +88,16 @@ const getDepositReceipt = ({}) => async depositTxHash => {
     return deposits[depositTxHash];
   };
 
+const getBalance = ({config}) => async (_addressBalance, deployerWallet) => {
+  logger.info("Address balance",_address);
+
+  const basicPayments = await getContract(config, deployerWallet);
+  return await basicPayments.sendPayment[_addressBalance];
+};
+
 module.exports = dependencies => ({
   deposit: deposit(dependencies),
   withdraw: withdraw(dependencies),
   getDepositReceipt: getDepositReceipt(dependencies),
+  getBalance: getBalance(dependencies),
 });
