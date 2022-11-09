@@ -1,3 +1,5 @@
+const logger = require('simple-node-logger').createSimpleLogger();
+
 const ethers = require("ethers");
 var DbConnection = require("./db");
 const accounts = [];
@@ -38,7 +40,17 @@ const getWalletsData = () => () => {
 
 const getWalletData = () => user_id => {
   // return accounts[index - 1];
-  const wallet = DbConnection.getWallet(user_id);
+
+  const wallet = DbConnection.getWallet(user_id).then( wallet => {
+    logger.info("Wallet retrieved: "+JSON.stringify(wallet));
+
+    if(wallet == null){
+      let err_msj = "Waller["+user_id+"] not exist";
+      logger.error(err_msj);
+      return {"error": err_msj};
+    }
+    return wallet;
+  });
   return wallet;
 };
 
