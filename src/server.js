@@ -2,6 +2,8 @@ const config = require("./config");
 const services = require("./services/services")({ config });
 const routes = require("./routes");
 
+const APP_PORT = 3000;  
+
 // Require the framework and instantiate it
 const fastify = require("fastify")({ logger: true });
 

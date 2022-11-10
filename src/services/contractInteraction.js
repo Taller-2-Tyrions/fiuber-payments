@@ -64,8 +64,8 @@ const withdraw = ({ config }) => async (receiverWallet, amountToSend, deployerWa
           receiverWallet: firstEvent.args.receiver,
           amountSent: firstEvent.args.amount,
         };
+        /* Info sobre Tx */
         DbConnection.insert("withdraws", data);
-        withdraws[tx.hash] = data;
       } else {
         console.error(`Withdraw not created in tx ${tx.hash}`);
       }
