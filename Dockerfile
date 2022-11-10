@@ -9,4 +9,4 @@ COPY --chown=node:node . .
 # Exponer el puerto 3010
 EXPOSE 3010
 #CMD [ "node" "server.js" ]
-CMD [ "src/server.js" ]
+CMD npm run start
