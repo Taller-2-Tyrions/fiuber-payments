@@ -71,14 +71,14 @@ function createDepositRoute({ services, config }) {
   };
 }
 
-function getDepositRoute({ services, config }) {
-  return {
-    method: "GET",
-    url: "/deposit/:txHash",
-    schema: getDeposit.schema(config),
-    handler: getDeposit.handler({ config, ...services }),
-  };
-}
+// function getDepositRoute({ services, config }) {
+//   return {
+//     method: "GET",
+//     url: "/deposit/:txHash",
+//     schema: getDeposit.schema(config),
+//     handler: getDeposit.handler({ config, ...services }),
+//   };
+// }
 
 function createWithdrawRoute({ services, config }) {
   return {
@@ -94,7 +94,7 @@ module.exports = [
   getWalletsDataRoute,
   createWalletRoute,
   createDepositRoute,
-  getDepositRoute,
+  // getDepositRoute,
   createWithdrawRoute,
   getWalletBalanceRoute,
   paymentVoyageRoute,
