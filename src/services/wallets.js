@@ -18,29 +18,30 @@ const createWallet =
   ({ config }) =>
   async (user_id) => {
     /* First check if user has any Wallet */
-    DbConnection.getWallet(user_id).then( wallet => {
-      if(wallet != null){
-        error.notExistWalletError();
+    return DbConnection.getWallet(user_id).then( wallet => {
+      logger.info("createWallet ", wallet);
+      if(wallet == null){
+        const provider = new ethers.providers.AlchemyProvider(config.network, process.env.ALCHEMY_API_KEY);
+        // This may break in some environments, keep an eye on it
+        const wallet = ethers.Wallet.createRandom().connect(provider);
+        // accounts.push({
+        //   address: wallet.address,
+        //   privateKey: wallet.privateKey,
+        // });
+        const result = {
+          id: user_id,
+          address: wallet.address,
+          privateKey: wallet.privateKey,
+        };
+        DbConnection.insert("wallets", result);
+
+        logger.info("Wallet created: ", result);
+
+        return result;
+      } else {
+        return error.existWalletError(user_id);
       }
     });
-
-    const provider = new ethers.providers.AlchemyProvider(config.network, process.env.ALCHEMY_API_KEY);
-    // This may break in some environments, keep an eye on it
-    const wallet = ethers.Wallet.createRandom().connect(provider);
-    // accounts.push({
-    //   address: wallet.address,
-    //   privateKey: wallet.privateKey,
-    // });
-    const result = {
-      id: user_id,
-      address: wallet.address,
-      privateKey: wallet.privateKey,
-    };
-    await DbConnection.insert("wallets", result);
-
-    logger.info("Wallet created: ", result);
-
-    return result;
   };
 
 const getPaymentsBalance = ({config}) => async => {
