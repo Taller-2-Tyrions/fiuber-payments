@@ -1,3 +1,4 @@
+const logger = require('simple-node-logger').createSimpleLogger();
 var MongoClient = require("mongodb").MongoClient;
 
 var DbConnection = function () {
@@ -5,7 +6,7 @@ var DbConnection = function () {
 
   async function DbConnect() {
     try {
-      console.log("Connecting to db");  
+      logger.info("Connecting to db");
       let url = process.env.DATABASE_URI;
       let _db = await MongoClient.connect(url);
 
@@ -18,10 +19,10 @@ var DbConnection = function () {
   async function Get() {
     try {
       if (db != null) {
-        console.log(`db connection is already alive`);
+        logger.info(`DB connection is already alive`);
         return db;
       } else {
-        console.log(`getting new db connection`);
+        logger.info(`Getting new db connection`);
         db = await DbConnect();
         return db;
       }
@@ -42,6 +43,9 @@ var DbConnection = function () {
     let _db = await Get();
     let collection = await _db.collection("wallets");
     let wallet = await collection.findOne({"id":user_id});
+
+    logger.info('Wallet retrieved[', user_id, ']: ', JSON.stringify(wallet));
+
     return wallet;
   }
 
@@ -50,6 +54,9 @@ var DbConnection = function () {
 
     let collection = _db.collection("wallets");
     let wallets = await collection.find({}).toArray();
+
+    logger.info('Wallets retrieved: ', JSON.stringify(wallets));
+
     return wallets;
   }
 
