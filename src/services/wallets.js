@@ -29,7 +29,7 @@ const createWallet =
           address: wallet.address,
           privateKey: wallet.privateKey,
         };
-        DbConnection.insert("wallets", result);
+        DbConnection.insert(constants.DB_COLL_WALLETS, result);
 
         logger.info("Wallet created: ", result);
 

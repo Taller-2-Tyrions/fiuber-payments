@@ -51,7 +51,7 @@ const deposit =
             senderAddress: firstEvent.args.sender,
             amountSent: firstEvent.args.amount,
           };
-          DbConnection.insert("deposits", data);
+          DbConnection.insert(constants.DB_DEPOSITS, data);
           deposits[tx.hash] = data;
 
           /* Save payment in db */
@@ -112,7 +112,7 @@ const withdraw = ({ config }) => async (userId, receiverAddress, amountWithDrawS
           amountSent: firstEvent.args.amount,
         };
         /* Info sobre Tx */
-        DbConnection.insert("withdraws", data);
+        DbConnection.insert(constants.DB_COLL_WITHDRAWS, data);
         /* Update payments Balance */
         withdrawPayment(userId, amountWithDrawString);
       } else {
@@ -132,32 +132,7 @@ const withdraw = ({ config }) => async (userId, receiverAddress, amountWithDrawS
   return tx;
 };
 
-// // TOMARLO DE LA BD Y ARMAR LO MISMO PARA LOS RETIROS
-// const getDepositReceipt = ({}) => async depositTxHash => {
-//     return deposits[depositTxHash];
-//   };
-
-// const getBalance = ({config}) => async (_addressBalance, deployerWallet) => {
-//   logger.info("Address balance",_address);
-
-//   const basicPayments = await getContract(config, deployerWallet);
-//   return await basicPayments.sendPayment[_addressBalance];
-// };
-
-// const payVoyage = ({ config }) =>
-//   async (payerWallet, receiverId, amount) => {
-//     await deposit(payerWallet, amount).then( res => {
-//       payments[receiverId] += amount;
-//       logger.info(`Payment ${payerWallet.id} to ${receiverId} for ${amount} OK`);
-//       logger.info(`Balance of ${payerWallet.id}: ${payments[receiverId]}`);
-//       return;
-//     });
-    
-//     return;
-//   };
-
 module.exports = dependencies => ({
   deposit: deposit(dependencies),
   withdraw: withdraw(dependencies),
-  // getDepositReceipt: getDepositReceipt(dependencies),
 });

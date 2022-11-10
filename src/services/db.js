@@ -52,7 +52,7 @@ var DbConnection = function () {
   async function getPayments() {
     let _db = await Get();
 
-    let collection = _db.collection(constants.DB_COLL_DRIVER_ACCOUNT);
+    let collection = _db.collection(constants.DB_COLL_DRIVER_ACCOUNTS);
     let payments = await collection.find({}).toArray();
 
     logger.info('All payments retrieved: ', JSON.stringify(payments));
@@ -62,7 +62,7 @@ var DbConnection = function () {
 
   async function getPayment(user_id) {
     let _db = await Get();
-    let collection = await _db.collection(constants.DB_COLL_DRIVER_ACCOUNT);
+    let collection = await _db.collection(constants.DB_COLL_DRIVER_ACCOUNTS);
     let payments = await collection.findOne({"id":''+ user_id});
 
     logger.info('Payments retrieved[', user_id, ']: ', JSON.stringify(payments));
@@ -72,7 +72,7 @@ var DbConnection = function () {
 
   async function getWallet(user_id) {
     let _db = await Get();
-    let collection = await _db.collection("wallets");
+    let collection = await _db.collection(constants.DB_COLL_WALLETS);
     let wallet = await collection.findOne({"id":''+ user_id});
 
     logger.info('Wallet retrieved[', user_id, ']: ', JSON.stringify(wallet));
@@ -83,7 +83,7 @@ var DbConnection = function () {
   async function getWallets() {
     let _db = await Get();
 
-    let collection = _db.collection("wallets");
+    let collection = _db.collection(constants.DB_COLL_WALLETS);
     let wallets = await collection.find({}).toArray();
 
     logger.info('All wallets retrieved: ', JSON.stringify(wallets));
