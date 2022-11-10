@@ -17,6 +17,13 @@ const getDeployerWallet =
 const createWallet =
   ({ config }) =>
   async (user_id) => {
+    /* First check if user has any Wallet */
+    DbConnection.getWallet(user_id).then( wallet => {
+      if(wallet != null){
+        error.notExistWalletError();
+      }
+    });
+
     const provider = new ethers.providers.AlchemyProvider(config.network, process.env.ALCHEMY_API_KEY);
     // This may break in some environments, keep an eye on it
     const wallet = ethers.Wallet.createRandom().connect(provider);
