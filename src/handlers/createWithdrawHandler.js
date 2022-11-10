@@ -9,12 +9,12 @@ function schema() {
         receiverAddress: {
           type: "string",
         },
-        amount: {
+        amountInEthers: {
           type: "string",
         },
       },
     },
-    required: ["userId", "receiverAddress", "amount"],
+    required: ["userId", "receiverAddress", "amountInEthers"],
   };
 }
 
@@ -23,7 +23,7 @@ function handler({ contractInteraction, walletService }) {
     return contractInteraction.withdraw(
       req.body.userId,
       req.body.receiverAddress,
-      req.body.amount,
+      req.body.amountInEthers,
       walletService.getDeployerWallet()
     );
   };
