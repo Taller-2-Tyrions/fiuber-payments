@@ -9,21 +9,19 @@ function schema() {
         receiverId: {
           type: "string",
         },
-        amountInEthers: {
+        amount: {
           type: "string",
         },
       },
     },
-    required: ["senderId", "amountInEthers"],
+    required: ["senderId", "receiverId", "amount"],
   };
 }
 
 function handler({ contractInteraction, walletService }) {
   return async function (req) {
-    const payerId = req.body.senderId;
-    const receiverId = req.body.receiverId;
-    const wallet =  await walletService.getWallet(req.body.senderId);
-    return contractInteraction.deposit(wallet, payerId, receiverId, req.body.amountInEthers);
+    const payerWallet =  await walletService.getWallet(req.body.senderId);
+    contractInteraction.payVoyage(payerWallet, req.body.receiverId, req.body.amount);
   };
 }
 

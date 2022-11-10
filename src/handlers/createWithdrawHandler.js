@@ -3,7 +3,7 @@ function schema() {
     params: {
       type: "object",
       properties: {
-        receiverWallet: {
+        receiverWalletId: {
           type: "string",
         },
         amountInEthers: {
@@ -11,13 +11,15 @@ function schema() {
         },
       },
     },
-    required: ["receiverWallet", "amountInEthers"],
+    required: ["receiverWalletId", "amountInEthers"],
   };
 }
 
 function handler({ contractInteraction, walletService }) {
   return async function (req) {
-    return contractInteraction.withdraw(req.body.receiverWallet, req.body.amountInEthers, walletService.getDeployerWallet());
+    const receiverWallet = await walletService.getWallet(req.body.receiverWalletId);
+    receiverWallet['id'] = req.body.receiverWalletId;
+    return await contractInteraction.withdraw(receiverWallet, req.body.amountInEthers, walletService.getDeployerWallet());
   };
 }
 

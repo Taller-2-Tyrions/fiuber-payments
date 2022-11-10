@@ -1,4 +1,6 @@
 const logger = require('../utils/utils').logger;
+const constants = require('../utils/constants');
+
 var MongoClient = require("mongodb").MongoClient;
 
 var DbConnection = function () {
@@ -39,6 +41,35 @@ var DbConnection = function () {
     return _data;
   }
 
+  async function update(collection, filter, data) {
+    let _db = await Get();
+
+    let _collection = _db.collection(collection);
+    let _data = _collection.updateOne(filter, {$set: data});
+    return _data; 
+  }
+
+  async function getPayments() {
+    let _db = await Get();
+
+    let collection = _db.collection(constants.DB_COLL_DRIVER_ACCOUNT);
+    let payments = await collection.find({}).toArray();
+
+    logger.info('All payments retrieved: ', JSON.stringify(payments));
+
+    return payments;
+  }
+
+  async function getPayment(user_id) {
+    let _db = await Get();
+    let collection = await _db.collection(constants.DB_COLL_DRIVER_ACCOUNT);
+    let payments = await collection.findOne({"id":''+ user_id});
+
+    logger.info('Payments retrieved[', user_id, ']: ', JSON.stringify(payments));
+
+    return payments;
+  }
+
   async function getWallet(user_id) {
     let _db = await Get();
     let collection = await _db.collection("wallets");
@@ -63,8 +94,11 @@ var DbConnection = function () {
   return {
     Get,
     insert,
+    update,
     getWallet,
-    getWallets
+    getWallets,
+    getPayment,
+    getPayments
   };
 };
 

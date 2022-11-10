@@ -30,37 +30,63 @@ const createWallet =
       privateKey: wallet.privateKey,
     };
     await DbConnection.insert("wallets", result);
-    // await DbConnection.insertWallet(result);
+
+    logger.info("Wallet created: ", result);
+
     return result;
   };
+
+const getPaymentsBalance = ({config}) => async => {
+  return DbConnection.getPayments();
+};
 
 const getWalletsData = () => () => {
   return DbConnection.getWallets();
 };
 
-const getWalletData = () => user_id => {
-  const wallet = DbConnection.getWallet(user_id).then( wallet => {
+const getWalletData = ({config}) => async user_id => {
+  const provider = new ethers.providers.AlchemyProvider(config.network, process.env.ALCHEMY_API_KEY);
+
+  return DbConnection.getWallet(user_id).then( wallet => {
     if(wallet == null){
-      let err_msj = "Waller["+user_id+"] not exist";
-      logger.error(err_msj);
-      return {"error": err_msj};
+      return error.notExistWalletError(user_id);
     }
-    return wallet;
+    
+    return _getBalance(config, user_id).then(r => {
+      wallet['balance'] = r['balance'];
+      logger.info("Wallet info: ", JSON.stringify(wallet));
+      return wallet;
+    });
   });
-  return wallet;
 };
 
+async function _getBalance(config, user_id) {
+    const provider = new ethers.providers.AlchemyProvider(config.network, process.env.ALCHEMY_API_KEY);
+    const wallet = await DbConnection.getWallet(user_id);
+    if(wallet == null){
+      return error.notExistWalletError(user_id);
+    }
+
+    const balance = await provider.getBalance(wallet.address);
+    let balanceRes = {"address": wallet.address, "balance": ethers.utils.formatEther(balance)}
+    logger.info("Balance[", wallet.address,"]: ", balanceRes);
+
+    return balanceRes;
+};
+
+//TODO: combinar con _getBalance
 const getWalletBalance = ({config}) => async user_id => {
     const provider = new ethers.providers.AlchemyProvider(config.network, process.env.ALCHEMY_API_KEY);
     const wallet = await DbConnection.getWallet(user_id);
     if(wallet == null){
       return error.notExistWalletError(user_id);
     }
+
     const balance = await provider.getBalance(wallet.address);
     let balanceRes = {"address": wallet.address, "balance": ethers.utils.formatEther(balance)}
     logger.info("Balance[", wallet.address,"]: ", balanceRes);
 
-    return balance
+    return balanceRes;
 };
 
 const getWallet = ({ config }) => async senderId => {
@@ -75,5 +101,6 @@ module.exports = ({ config }) => ({
   getWalletsData: getWalletsData({ config }),
   getWalletData: getWalletData({ config }),
   getWallet: getWallet({ config }),
-  getWalletBalance: getWalletBalance({config})
+  getWalletBalance: getWalletBalance({config}),
+  getPaymentsBalance: getPaymentsBalance({config})
 });
