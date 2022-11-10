@@ -44,6 +44,15 @@ const getPaymentsBalance = ({config}) => async => {
   return DbConnection.getPayments();
 };
 
+const getPaymentBalance = ({config}) => async user_id => {
+  return DbConnection.getPayment(user_id).then( payment => {
+    if(payment == null){
+      return error.withdrawPaymentError(user_id);
+    }
+    return payment;
+  });
+};
+
 const getWalletsData = () => () => {
   return DbConnection.getWallets();
 };
@@ -106,5 +115,6 @@ module.exports = ({ config }) => ({
   getWalletData: getWalletData({ config }),
   getWallet: getWallet({ config }),
   getWalletBalance: getWalletBalance({config}),
-  getPaymentsBalance: getPaymentsBalance({config})
+  getPaymentBalance: getPaymentBalance({config}),
+  getPaymentsBalance: getPaymentsBalance({config}),
 });

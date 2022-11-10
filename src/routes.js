@@ -19,8 +19,8 @@ function paymentsVoyageRoute({services, config}) {
 
 function paymentVoyageRoute({services, config}) {
   return {
-    method: "POST",
-    url: "/payment",
+    method: "GET",
+    url: "/payments/:user_id",
     schema: paymentVoyage.schema(config),
     handler: paymentVoyage.handler({ config, ...services }),
   };
