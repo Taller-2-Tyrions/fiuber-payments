@@ -6,15 +6,6 @@ const getDeposit = require("./handlers/getDepositHandler");
 const createWithdraw = require("./handlers/createWithdrawHandler");
 const getWalletBalance = require("./handlers/getWalletBalance");
 
-function getWalletBalanceOf( {services, config}) {
-  return {
-    method: "GET",
-    url: "/wallet/balance/:user_id",
-    schema: getWalletBalance.schema(config),
-    handler: getWalletBalance.handler({ config, ...services }),
-  };
-}
-
 function getWalletDataRoute({ services, config }) {
   return {
     method: "GET",

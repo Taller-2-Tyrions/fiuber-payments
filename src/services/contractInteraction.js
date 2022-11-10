@@ -1,4 +1,4 @@
-const logger = require('simple-node-logger').createSimpleLogger();
+const logger = require('../utils/utils').logger;
 const ethers = require("ethers");
 const walletService = require("./wallets");
 const getDepositHandler = require("../handlers/getDepositHandler");

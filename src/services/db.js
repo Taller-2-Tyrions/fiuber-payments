@@ -1,4 +1,4 @@
-const logger = require('simple-node-logger').createSimpleLogger();
+const logger = require('../utils/utils').logger;
 var MongoClient = require("mongodb").MongoClient;
 
 var DbConnection = function () {
@@ -42,7 +42,7 @@ var DbConnection = function () {
   async function getWallet(user_id) {
     let _db = await Get();
     let collection = await _db.collection("wallets");
-    let wallet = await collection.findOne({"id":user_id});
+    let wallet = await collection.findOne({"id":''+ user_id});
 
     logger.info('Wallet retrieved[', user_id, ']: ', JSON.stringify(wallet));
 

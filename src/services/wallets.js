@@ -1,4 +1,5 @@
-const logger = require('simple-node-logger').createSimpleLogger();
+const logger = require('../utils/utils').logger;
+const error = require("../errors/error");
 
 const ethers = require("ethers");
 var DbConnection = require("./db");
@@ -52,8 +53,14 @@ const getWalletData = () => user_id => {
 const getWalletBalance = ({config}) => async user_id => {
     const provider = new ethers.providers.AlchemyProvider(config.network, process.env.ALCHEMY_API_KEY);
     const wallet = await DbConnection.getWallet(user_id);
+    if(wallet == null){
+      return error.notExistWalletError(user_id);
+    }
     const balance = await provider.getBalance(wallet.address);
-    return {"address": wallet.address, "balance": ethers.utils.formatEther(balance)}
+    let balanceRes = {"address": wallet.address, "balance": ethers.utils.formatEther(balance)}
+    logger.info("Balance[", wallet.address,"]: ", balanceRes);
+
+    return balance
 };
 
 const getWallet = ({ config }) => async senderId => {
