@@ -4,4 +4,6 @@ module.exports = Object.freeze({
     DB_COLL_DRIVER_ACCOUNTS: 'driver_accounts',
     DB_COLL_DEPOSITS: 'deposits',
     DB_COLL_WITHDRAWS: 'withdraws',
+
+    FIUBER_PERC_FEE: 0.1,
 });
