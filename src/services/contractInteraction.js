@@ -33,6 +33,23 @@ const getContract = (config, wallet) => {
   return new ethers.Contract(config.contractAddress, config.contractAbi, wallet);
 };
 
+async function savePayment(receiverId, amount){
+  let pay = DbConnection.getPayment(receiverId).then( payments => {
+            
+    if(payments == null){
+      payments = {
+        id: receiverId,
+        amount: amount
+      };
+      DbConnection.insert(constants.DB_COLL_DRIVER_ACCOUNTS, payments);
+    } else {
+      payments.amount += amount;
+      DbConnection.update(constants.DB_COLL_DRIVER_ACCOUNTS, {id: receiverId}, {amount: payments.amount});
+    }
+    logger.info(`After Balance of ${receiverId}: ${payments.amount}`);
+  });
+}
+
 const deposit =
   ({ config }) =>
   async (senderWallet, payerId, receiverId, amountToSend) => {
@@ -57,25 +74,15 @@ const deposit =
 
           /* Save payment in db */
           const amount = parseFloat(amountToSend);
+          const driver_earnings = amount - amount*constants.FIUBER_PERC_FEE;
+          const fiuber_earnings = amount*constants.FIUBER_PERC_FEE;
           
-          let pay = DbConnection.getPayment(receiverId).then( payments => {
-            
-            if(payments == null){
-              payments = {
-                id: receiverId,
-                amount: amount
-              };
-              DbConnection.insert(constants.DB_COLL_DRIVER_ACCOUNTS, payments);
-            } else {
-              logger.info(`Before Payment Balance of ${payerId}: ${payments.amount}`);
-              payments.amount += amount;
-              DbConnection.update(constants.DB_COLL_DRIVER_ACCOUNTS, {id: receiverId}, {amount: payments.amount});
-            }
-          
-            logger.info(`Payment ${payerId} to ${receiverId} for ${amount} OK`);
-            logger.info(`After Balance of ${receiverId}: ${payments.amount}`);
-            
-          });
+          savePayment(receiverId, driver_earnings)
+          savePayment("fiuber", fiuber_earnings)
+
+          logger.info(`Payment ${payerId} to ${receiverId} for ${amount} OK`);
+          // let pay = DbConnection.getPayment(receiverId).then( payments => {
+
         } else {
           logger.error(`Payment not created in tx ${tx.hash}`);
         }

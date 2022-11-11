@@ -4,6 +4,7 @@ const error = require("../errors/error");
 
 const ethers = require("ethers");
 var DbConnection = require("./db");
+const { use } = require('chai');
 const accounts = [];
 
 const getDeployerWallet =
@@ -59,8 +60,8 @@ const getWalletsData = ({config}) => async () => {
 
   var wallets = await DbConnection.getWallets();
   for (const wallet of wallets) {
-    amounts = await balanceAmounts(provider, wallet);
-    wallet['balance'] = amounts.net;
+    amount = await getBalance(provider, wallet);
+    wallet['balance'] = amount;
   }
   return wallets;
 }
@@ -72,26 +73,33 @@ const getWalletData = ({config}) => async user_id => {
   if(wallet == null){
     return error.notExistWalletError(user_id);
   }
-    
-  amounts = await balanceAmounts(provider, wallet);
-  wallet['balance'] = amounts.net;
+  
+  amount = await getBalance(provider, wallet);
+
+  wallet['balance'] = amount;
   return wallet;
 };
 
 const getWalletBalance = ({config}) => async user_id => {
-    const provider = new ethers.providers.AlchemyProvider(config.network, process.env.ALCHEMY_API_KEY);
-    const wallet = await DbConnection.getWallet(user_id);
-    if(wallet == null){
-      return error.notExistWalletError(user_id);
-    }
+  const provider = new ethers.providers.AlchemyProvider(config.network, process.env.ALCHEMY_API_KEY);
+  const wallet = await DbConnection.getWallet(user_id);
+  if(wallet == null){
+     return error.notExistWalletError(user_id);
+  }
 
-    amounts = await balanceAmounts(provider, wallet);
-    const balanceRes = {"address": wallet.address, "brute_amount": amounts.brute, "net_amount": amounts.net, "fee_amount": amounts.fee}
+  const balance = await getBalance(provider, wallet);
+  let balanceRes = {"address": wallet.address, "balance": balance}
+  logger.info(`Balance[${wallet.id}]: ${JSON.stringify(balanceRes)}`);
 
-    logger.info(`Balance[${wallet.id}]: ${balanceRes}`);
-
-    return balanceRes;
+  return balanceRes;
 };
+
+
+async function getBalance(provider, wallet){
+  const balanceHex = await provider.getBalance(wallet.address);
+  const balanceAmount = ethers.utils.formatEther(balanceHex);
+  return balanceAmount;
+}
 
 const getWallet = ({ config }) => async senderId => {
     const provider = new ethers.providers.AlchemyProvider(config.network, process.env.ALCHEMY_API_KEY);
@@ -99,30 +107,6 @@ const getWallet = ({ config }) => async senderId => {
     return new ethers.Wallet(wallet.privateKey, provider);
   };
 
-async function _getBalance(config, user_id) {
-   const provider = new ethers.providers.AlchemyProvider(config.network, process.env.ALCHEMY_API_KEY);
-    const wallet = await DbConnection.getWallet(user_id);
-    if(wallet == null){
-       return error.notExistWalletError(user_id);
-    }
-
-    const balance = await provider.getBalance(wallet.address);
-    let balanceRes = {"address": wallet.address, "balance": ethers.utils.formatEther(balance)}
-    logger.info(`Balance[${wallet.id}]: ${JSON.stringify(balanceRes)}`);
-
-    return balanceRes;
-};
-
-async function balanceAmounts(provider, wallet){
-    const balanceHex = await provider.getBalance(wallet.address);
-    const balanceAmountBrute = ethers.utils.formatEther(balanceHex);
-    const feeAmount = balanceAmountBrute * constants.FIUBER_PERC_FEE;
-    const balanceAmountNet = balanceAmountBrute - feeAmount;
-
-    logger.info(`Balance[${wallet.id}]: brute amount: ${balanceAmountBrute}, net amount: ${balanceAmountNet}, fee amount: ${feeAmount}`);
-
-    return {brute: balanceAmountBrute, net: ''+balanceAmountNet, fee: ''+feeAmount};
-}
 
 module.exports = ({ config }) => ({
   createWallet: createWallet({ config }),
