@@ -78,7 +78,6 @@ const getWalletData = ({config}) => async user_id => {
   return wallet;
 };
 
-//TODO: combinar con _getBalance
 const getWalletBalance = ({config}) => async user_id => {
     const provider = new ethers.providers.AlchemyProvider(config.network, process.env.ALCHEMY_API_KEY);
     const wallet = await DbConnection.getWallet(user_id);
@@ -86,12 +85,10 @@ const getWalletBalance = ({config}) => async user_id => {
       return error.notExistWalletError(user_id);
     }
 
-    const balanceHex = await provider.getBalance(wallet.address);
-    const balanceAmount = ethers.utils.formatEther(balanceHex);
-    let feeAmount =  balanceAmount * constants.FIUBER_FEE;
-    let balanceRes = {"address": wallet.address, "balance": (balanceAmount - feeAmount)}
+    amounts = await balanceAmounts(provider, wallet);
+    const balanceRes = {"address": wallet.address, "brute_amount": amounts.brute, "net_amount": amounts.net, "fee_amount": amounts.fee}
 
-    logger.info("Balance[", wallet.address,"]: ", balanceRes);
+    logger.info(`Balance[${wallet.id}]: ${balanceRes}`);
 
     return balanceRes;
 };
@@ -124,7 +121,7 @@ async function balanceAmounts(provider, wallet){
 
     logger.info(`Balance[${wallet.id}]: brute amount: ${balanceAmountBrute}, net amount: ${balanceAmountNet}, fee amount: ${feeAmount}`);
 
-    return {brute: balanceAmountBrute, net: balanceAmountNet, fee: feeAmount};
+    return {brute: balanceAmountBrute, net: ''+balanceAmountNet, fee: ''+feeAmount};
 }
 
 module.exports = ({ config }) => ({
