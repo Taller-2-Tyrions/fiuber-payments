@@ -36,6 +36,7 @@ var DbConnection = function () {
   async function insert(collection, data) {
     let _db = await Get();
 
+    // console.log("Collection -->", collection)
     let _collection = _db.collection(collection);
     let _data = await _collection.insertOne(data);
     return _data;

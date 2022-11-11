@@ -23,7 +23,7 @@ function withdrawPayment(userIdFrom, amountWithDraw){
     logger.info(`Before Payment Balance of ${userIdFrom}: ${payments.amount}`);
 
     const newAmount = payments.amount - amountToWithDraw;
-    DbConnection.update(constants.DB_COLL_DRIVER_ACCOUNT, {id: userIdFrom}, {amount: newAmount});
+    DbConnection.update(constants.DB_COLL_DRIVER_ACCOUNTS, {id: userIdFrom}, {amount: newAmount});
 
     logger.info(`Payment Balance OK`);
   });
@@ -51,7 +51,8 @@ const deposit =
             senderAddress: firstEvent.args.sender,
             amountSent: firstEvent.args.amount,
           };
-          DbConnection.insert(constants.DB_DEPOSITS, data);
+
+          DbConnection.insert(constants.DB_COLL_DEPOSITS, data);
           deposits[tx.hash] = data;
 
           /* Save payment in db */
@@ -64,11 +65,11 @@ const deposit =
                 id: receiverId,
                 amount: amount
               };
-              DbConnection.insert(constants.DB_COLL_DRIVER_ACCOUNT, payments);
+              DbConnection.insert(constants.DB_COLL_DRIVER_ACCOUNTS, payments);
             } else {
               logger.info(`Before Payment Balance of ${payerId}: ${payments.amount}`);
               payments.amount += amount;
-              DbConnection.update(constants.DB_COLL_DRIVER_ACCOUNT, {id: receiverId}, {amount: payments.amount});
+              DbConnection.update(constants.DB_COLL_DRIVER_ACCOUNTS, {id: receiverId}, {amount: payments.amount});
             }
           
             logger.info(`Payment ${payerId} to ${receiverId} for ${amount} OK`);
