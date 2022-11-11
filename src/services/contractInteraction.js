@@ -1,94 +1,138 @@
+const constants = require('../utils/constants');
+const logger = require('../utils/utils').logger;
+const error = require("../errors/error");
+
 const ethers = require("ethers");
 const walletService = require("./wallets");
 const getDepositHandler = require("../handlers/getDepositHandler");
 var DbConnection = require("./db");
 
+const deposits = {};
+const withdraws = {};
+
+function withdrawPayment(userIdFrom, amountWithDraw){
+  DbConnection.getPayment(userIdFrom).then( payments => {
+    let amountToWithDraw = parseFloat(amountWithDraw);
+
+    if(payments == null){
+      return error.withdrawPaymentError(userIdFrom);
+    }
+    if(payments.amount < amountToWithDraw){
+      return error.withdrawPaymentAmountError(userIdFrom);
+    }
+    logger.info(`Before Payment Balance of ${userIdFrom}: ${payments.amount}`);
+
+    const newAmount = payments.amount - amountToWithDraw;
+    DbConnection.update(constants.DB_COLL_DRIVER_ACCOUNT, {id: userIdFrom}, {amount: newAmount});
+
+    logger.info(`Payment Balance OK`);
+  });
+}
+
 const getContract = (config, wallet) => {
   return new ethers.Contract(config.contractAddress, config.contractAbi, wallet);
 };
 
-const deposits = {};
-const withdraws = {};
-
 const deposit =
   ({ config }) =>
-  async (senderWallet, amountToSend) => {
+  async (senderWallet, payerId, receiverId, amountToSend) => {
     const basicPayments = await getContract(config, senderWallet);
     const tx = await basicPayments.deposit({
       value: await ethers.utils.parseEther(amountToSend).toHexString(),
     });
     tx.wait(1).then(
       receipt => {
-        console.log("Transaction mined");
+        logger.info("Transaction mined");
         const firstEvent = receipt && receipt.events && receipt.events[0];
-        console.log(firstEvent);
+        logger.info(firstEvent);
         if (firstEvent && firstEvent.event == "DepositMade") {
           data = {
             hash: tx.hash,
             senderAddress: firstEvent.args.sender,
             amountSent: firstEvent.args.amount,
           };
-          DbConnection.insert("deposits", data);
+          DbConnection.insert(constants.DB_DEPOSITS, data);
           deposits[tx.hash] = data;
+
+          /* Save payment in db */
+          const amount = parseFloat(amountToSend);
+          
+          let pay = DbConnection.getPayment(receiverId).then( payments => {
+            
+            if(payments == null){
+              payments = {
+                id: receiverId,
+                amount: amount
+              };
+              DbConnection.insert(constants.DB_COLL_DRIVER_ACCOUNT, payments);
+            } else {
+              logger.info(`Before Payment Balance of ${payerId}: ${payments.amount}`);
+              payments.amount += amount;
+              DbConnection.update(constants.DB_COLL_DRIVER_ACCOUNT, {id: receiverId}, {amount: payments.amount});
+            }
+          
+            logger.info(`Payment ${payerId} to ${receiverId} for ${amount} OK`);
+            logger.info(`After Balance of ${receiverId}: ${payments.amount}`);
+            
+          });
         } else {
-          console.error(`Payment not created in tx ${tx.hash}`);
+          logger.error(`Payment not created in tx ${tx.hash}`);
         }
       },
       error => {
         const reasonsList = error.results && Object.values(error.results).map(o => o.reason);
         const message = error instanceof Object && "message" in error ? error.message : JSON.stringify(error);
-        console.error("reasons List");
-        console.error(reasonsList);
+        logger.error("reasons List");
+        logger.error(reasonsList);
 
-        console.error("message");
-        console.error(message);
+        logger.error("message");
+        logger.error(message);
       },
     );
     return tx;
   };
 
+const withdraw = ({ config }) => async (userId, receiverAddress, amountWithDrawString, deployerWallet) => {
+  logger.info("User Id withdraw: ", userId);
+  logger.info("Receiver Wallet address: ", receiverAddress);
+  logger.info("Amount withdraw: ", amountWithDrawString);
+  logger.info("Deployer wallet: ", deployerWallet);
 
-const withdraw = ({ config }) => async (receiverWallet, amountToSend, deployerWallet) => {
-  console.log(deployerWallet)
   const basicPayments = await getContract(config, deployerWallet);
-  const tx = await basicPayments.sendPayment(receiverWallet, await ethers.utils.parseEther(amountToSend).toHexString());
+  const tx = await basicPayments.sendPayment(receiverAddress, await ethers.utils.parseEther(amountWithDrawString).toHexString());
   tx.wait(1).then(
     receipt => {
-      console.log("Transaction mined");
+      logger.info("Transaction mined");
       const firstEvent = receipt && receipt.events && receipt.events[0];
-      console.log(firstEvent);
+      logger.info("firstEvent: ", firstEvent);
       if (firstEvent && firstEvent.event == "PaymentMade") {
         data = {
           hash: tx.hash,
           receiverWallet: firstEvent.args.receiver,
           amountSent: firstEvent.args.amount,
         };
-        DbConnection.insert("withdraws", data);
-        withdraws[tx.hash] = data;
+        /* Info sobre Tx */
+        DbConnection.insert(constants.DB_COLL_WITHDRAWS, data);
+        /* Update payments Balance */
+        withdrawPayment(userId, amountWithDrawString);
       } else {
-        console.error(`Withdraw not created in tx ${tx.hash}`);
+        logger.error(`Withdraw not created in tx ${tx.hash}`);
       }
     },
     error => {
       const reasonsList = error.results && Object.values(error.results).map(o => o.reason);
       const message = error instanceof Object && "message" in error ? error.message : JSON.stringify(error);
-      console.error("reasons List");
-      console.error(reasonsList);
+      logger.error("reasons List");
+      logger.error(reasonsList);
 
-      console.error("message");
-      console.error(message);
+      logger.error("message");
+      logger.error(message);
     },
   );
   return tx;
 };
 
-// TOMARLO DE LA BD Y ARMAR LO MISMO PARA LOS RETIROS
-const getDepositReceipt = ({}) => async depositTxHash => {
-    return deposits[depositTxHash];
-  };
-
 module.exports = dependencies => ({
   deposit: deposit(dependencies),
   withdraw: withdraw(dependencies),
-  getDepositReceipt: getDepositReceipt(dependencies),
 });
