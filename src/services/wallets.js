@@ -88,7 +88,7 @@ const getWalletBalance = ({config}) => async user_id => {
   }
 
   const balance = await getBalance(provider, wallet);
-  let balanceRes = {"address": wallet.address, "balance": balance}
+  let balanceRes = {"id": wallet.id,"address": wallet.address, "balance": balance}
   logger.info(`Balance[${wallet.id}]: ${JSON.stringify(balanceRes)}`);
 
   return balanceRes;
