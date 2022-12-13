@@ -12,15 +12,15 @@ function existWalletError(user_id){
 }
 
 function notExistWalletError(user_id){
-  return _throwBasicException(`Waller[${user_id}] not exist`);
+  return _throwBasicException(`Wallet[${user_id}] not exist`);
 }
 
 function withdrawPaymentError(user_id){
-  return _throwBasicException(`Waller[${user_id}] doesn't have payment`);
+  return _throwBasicException(`Wallet[${user_id}] doesn't have payment`);
 }
 
 function withdrawPaymentAmountError(user_id){
-  return _throwBasicException(`Waller[${user_id}] insufficient funds`);
+  return _throwBasicException(`Wallet[${user_id}] insufficient funds`);
 }
 
 function _throwBasicException(err_msj) {
