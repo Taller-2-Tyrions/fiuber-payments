@@ -1,0 +1,394 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Fiuber Smart Constract API",
+    "description": "Specifications for fiuber smart contract API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://fiuber-payments-new.herokuapp.com/"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Wallet",
+      "description": "Fiuber User's wallet API"
+    },
+    {
+      "name": "Deposit",
+      "description": "Fiuber Smart Contract deposits API"
+    },
+    {
+      "name": "Withdraw",
+      "description": "Fiuber Smart Contract whitdraws API"
+    },
+    {
+      "name": "Voyage",
+      "description": "Fiuber drivers payemnts API"
+    }
+  ],
+  "paths": {
+    "/wallet": {
+      "post": {
+        "tags": [
+          "Wallet"
+        ],
+        "summary": "Create user's wallet",
+        "description": "Creates a wallet for an user",
+        "operationId": "createWallet",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWalletBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Wallet was successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WalletResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Wallet already exists for user"
+          },
+          "500": {
+            "description": "Server Error: Wallet was not created properly",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/wallet/{id}": {
+      "get": {
+        "tags": [
+          "Wallet"
+        ],
+        "summary": "Get wallet",
+        "description": "Get users's wallet",
+        "operationId": "getWallet",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "User id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operation successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetWalletResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Users's wallet not found",
+            "content": {}
+          },
+          "500": {
+            "description": "Server Error: Can't return the wallet"
+          }
+        }
+      }
+    },
+    "/balance/{id}": {
+      "get": {
+        "tags": [
+          "Wallet"
+        ],
+        "summary": "Get wallet balance",
+        "description": "Get users's balance",
+        "operationId": "getBalance",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "User id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operation successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetBalanceResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Users's balance not found",
+            "content": {}
+          },
+          "500": {
+            "description": "Server Error: Can't return the balance"
+          }
+        }
+      }
+    },
+    "/wallets": {
+      "get": {
+        "tags": [
+          "Wallet"
+        ],
+        "summary": "Get wallets",
+        "description": "Get all wallets",
+        "operationId": "getWallets",
+        "responses": {
+          "200": {
+            "description": "Operation successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error: Can't return wallets"
+          }
+        }
+      }
+    },
+    "/deposit": {
+      "post": {
+        "tags": [
+          "Deposit"
+        ],
+        "summary": "User deposits ethers",
+        "description": "Creates a deposit from user",
+        "operationId": "createDeposit",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDepositBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Deposit successfully made",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error: Deposit was not created properly"
+          }
+        }
+      }
+    },
+    "/withdraw": {
+      "post": {
+        "tags": [
+          "Withdraw"
+        ],
+        "summary": "User withdraws ethers",
+        "description": "Creates a withdraw from user",
+        "operationId": "createWithdraw",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWithdrawBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Withdraw successfully made",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error: Withdraw was not created properly"
+          }
+        }
+      }
+    },
+    "/payments/{id}": {
+      "get": {
+        "tags": [
+          "Voyage"
+        ],
+        "summary": "Get drivers balance",
+        "description": "Get driver's balance",
+        "operationId": "getDriverBalance",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Driver id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operation successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Driver's balance not found",
+            "content": {}
+          },
+          "500": {
+            "description": "Server Error: Can't return the balance"
+          }
+        }
+      }
+    },
+    "/payments": {
+      "get": {
+        "tags": [
+          "Voyage"
+        ],
+        "summary": "Get all drivers balance",
+        "description": "Get all drivers balance",
+        "operationId": "getAllBalances",
+        "responses": {
+          "200": {
+            "description": "Operation successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error: Can't return baances"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateWalletBody": {
+        "required": [
+          "user_id"
+        ],
+        "properties": {
+          "user_id": {
+            "type": "string"
+          }
+        }
+      },
+      "WalletResponse": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "privateKey": {
+            "type": "string"
+          }
+        }
+      },
+      "GetWalletResponse": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "privateKey": {
+            "type": "string"
+          },
+          "balance": {
+            "type": "string"
+          }
+        }
+      },
+      "GetBalanceResponse": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "balance": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateDepositBody": {
+        "properties": {
+          "senderId": {
+            "type": "string"
+          },
+          "receiverId": {
+            "type": "string"
+          },
+          "amountInEthers": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateWithdrawBody": {
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "receiverAddress": {
+            "type": "string"
+          },
+          "amountInEthers": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
