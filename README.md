@@ -1,5 +1,3 @@
-[![codecov](https://codecov.io/gh/Taller-2-Tyrions/fiuber-payments/branch/main/graph/badge.svg?token=pqpC5Y9JiG)](https://codecov.io/gh/Taller-2-Tyrions/fiuber-payments)
-
 # Fiuber-Payments
 
 Microservicio implementado en Nodejs. Tiene a cargo llevar a cabo los pagos de los pasajeros una vez que finalizan los viajes.
